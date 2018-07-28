@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="claim_page" name="Les réclamations">
+      <t t-call="website.layout">
+        <div class="oe_structure">
+          <div class="container">
+            <center><h3>Liste des réclamations</h3></center>
+            <t t-foreach="claim_ids" t-as="o">
+              <h4><span t-esc="o.name"/></h4>
+              <table class="table-striped table">
+                <tr>
+                  <td>Code:</td>
+                  <td><span t-esc="o.code"/></td>
+                </tr>
+                 <tr>
+                  <td>Date de début:</td>
+                  <td><span t-esc="o.start_date"/></td>
+                </tr>
+                <tr>
+                  <td>Responsable:</td>
+                  <td><span t-esc="o.user_id.name"/></td>
+                </tr>
+                <tr>
+                  <td>Amount:</td>
+                  <td><span t-esc="o.amount"/></td>
+                </tr>
+                <tr>
+                  <td>Description:</td>
+                  <td>
+                    <span t-esc="o.description"/>
+                  </td>
+                </tr>
+              </table>
+            </t>
+          </div>
+        </div>
+      </t>
+    </template>
+    
+</odoo>

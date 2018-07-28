@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+<!--Custom report-->
+<template id="report_template_reg">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="web.external_layout">
+                <div class="page">
+                        <div class="row mt32 mb32">
+                            <div class="col-xs-2">
+                                <strong>Nom:</strong>
+                                <p t-field="o.name"/>
+                            </div>
+                            <div class="col-xs-2">
+                                <strong>Code:</strong>
+                                <p t-field="o.code"/>
+                            </div>
+                        </div>
+                        
+                       <!-- table -->
+                       <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Code</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <tr t-foreach="o.claim_ids" t-as="l">
+                                    <td><span t-field="l.name"/></td>
+                                    <td><span t-field="l.code"/></td>
+                                    <td><span t-field="l.description"/></td>
+                                </tr>
+                            </tbody>
+                        </table> 
+                        
+                       <div class="row">
+                            <div class="col-xs-4 pull-right">
+                                <table class="table table-condensed">
+                                    <tr class="border-black">
+                                        <td><strong>Total Réc</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.nbr"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+               </div>
+            </t>
+        </t>
+    </t>
+</template>
+</data>
+</odoo>

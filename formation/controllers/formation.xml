@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <template id="formation_page" name="Page 1">
+      <t t-call="website.layout">
+        <div class="oe_structure">
+          <div class="container">
+            <center><h3>Page 1</h3></center>
+           <p><center> You can add all your content here.</center><br/>
+             <center> <a t-attf-href="/formation/claim" class="btn btn-info">Click Me !</a></center>
+            </p>
+          </div>
+        </div>
+      </t>
+    </template>
+    </data>
+</odoo>

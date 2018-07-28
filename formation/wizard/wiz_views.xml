@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <!-- calc.age.wiz :Wizard Form View  -->
+        <record model="ir.ui.view" id="student_wizard_form_view">
+            <field name="name">calc.age.wiz.form</field>
+            <field name="model">calc.age.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Calcule de l'age">
+                    <separator string="Calcule de l'age" colspan="4"/>
+                    <group>
+                        <field name="from_date"/>
+                    </group>
+                   <footer>
+                       <button special="cancel" string="Fermer"/>
+                       <button name="calc_age" string="Calculer" type="object"/>
+                   </footer>
+               </form>
+            </field>
+        </record>
+        
+        <!-- calc.age.wiz.action -->
+        <record model="ir.actions.act_window" id="student_wizard_action_view">
+            <field name="name">Calcule de l'age</field>
+            <field name="res_model">calc.age.wiz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="student_wizard_form_view" />
+            <field name="target">new</field>
+        </record>
+       
+        
+        <!-- Add the option on more menu-->
+		<act_window
+ 					id='wiz__function_name'
+					res_model='calc.age.wiz'
+					src_model='res.partner'
+					target='new'
+					name="Calcule de l'age"
+					view_mode='form'
+					key2="client_action_multi"/>
+        
+</odoo>

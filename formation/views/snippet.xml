@@ -1,0 +1,77 @@
+<odoo>
+    <data>
+        <template id="formation_first_snippet_files" inherit_id="website.assets_frontend" name="First snippet">
+            <xpath expr="script[last()]" position="after">
+            	
+            	<!-- css files -->
+			    <link rel="stylesheet" href="/formation/static/src/css/style.css"/>
+
+				<!-- javascript files-->
+				<!--  <script type="text/javascript" src="/ModuleName/static/src/js/snippet.js"></script>-->
+            </xpath>
+        </template>
+
+      <!-- service model 3 snippet -->
+        <template id="service_snippet" name="Service box">                
+			<section class="oe_snippet_body">
+				<!-- Snippet body HTML Code -->
+					<div class="container">
+					    <div class="row">
+					        <div class="col-md-4 col-sm-6">
+					            <div class="serviceBox">
+					                <span class="service-icon">
+					                    <i class="fa fa-globe"></i>
+					                </span>
+					                <div class="service-content">
+					                    <h3 class="title">Web Design</h3>
+					                    <p class="description">
+					                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pulvinar posuere tempor. Duis at neque fermentum, molestie massa vel, aliquet.
+					                    </p>
+					                    <a href="#" class="read-more">read more</a>
+					                </div>
+					            </div>
+					        </div>
+					 
+					        <div class="col-md-4 col-sm-6">
+					            <div class="serviceBox">
+					                <span class="service-icon">
+					                    <i class="fa fa-rocket"></i>
+					                </span>
+					                <div class="service-content">
+					                    <h3 class="title">Web Development</h3>
+					                    <p class="description">
+					                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pulvinar posuere tempor. Duis at neque fermentum, molestie massa vel, aliquet.
+					                    </p>
+					                    <a href="#" class="read-more">read more</a>
+					                </div>
+					            </div>
+					        </div>
+					        
+					        <div class="col-md-4 col-sm-6">
+					            <div class="serviceBox">
+					                <span class="service-icon">
+					                    <i class="fa fa-rocket"></i>
+					                </span>
+					                <div class="service-content">
+					                    <h3 class="title">Odoo</h3>
+					                    <p class="description">
+					                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pulvinar posuere tempor. Duis at neque fermentum, molestie massa vel, aliquet.
+					                    </p>
+					                    <a href="https://www.odoo.com" class="read-more">read more</a>
+					                </div>
+					            </div>
+					        </div>
+					    </div>
+					    </div>
+		    </section>
+        </template>
+
+		 <!-- snippets declaration for  snippet_content|snippet_effect -->
+	 	<template id="snippets_effect_menu" inherit_id="website.snippets" name="New Snippets">
+		  <xpath expr="//div[@id='snippet_effect']/div[@class='o_panel_body']" position="inside">
+		  	<t t-snippet="formation.service_snippet" t-thumbnail="/formation/static/src/img/logo.png"/>
+		  </xpath>
+		</template>
+
+</data>
+</odoo>
