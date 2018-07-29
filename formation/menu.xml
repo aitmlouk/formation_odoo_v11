@@ -3,19 +3,25 @@
 			<!-- Menus -->
 			<menuitem id="module_root" name="Formation" />
 				<menuitem id="module_root_menu" parent="module_root" name="Université" sequence='1'/>
-					<menuitem id="module_menu" name="Module" parent="module_root_menu" action="module_action_view"/>
-					<menuitem id="section_menu" name="Section" parent="module_root_menu" action="section_action_view"/>
-					<menuitem id="level_menu" name="Niveau" parent="module_root_menu" action="level_action_view"/>
-					<menuitem id="cycle_menu" name="Cycle" parent="module_root_menu" action="cycle_action_view"/>
+					<menuitem id="module_menu" name="Module" parent="module_root_menu" sequence='5' action="module_action_view"/>
+					<menuitem id="section_menu" name="Section" parent="module_root_menu" sequence='4' action="section_action_view"/>
+					<menuitem id="level_menu" name="Niveau" parent="module_root_menu" sequence='3' action="level_action_view"/>
+					<menuitem id="cycle_menu" name="Cycle" parent="module_root_menu" sequence='1' action="cycle_action_view"/>
+					<menuitem id="filiere_menu" name="Filière" parent="module_root_menu" sequence='2' action="filiere_action_view"/>
 				
 				<menuitem id="ins_root_menu" parent="module_root" name="Inscription" sequence='2'/>
 					<menuitem id="reg_menu" name="Inscription" parent="ins_root_menu" action="reg_action_view"/>
 					<menuitem id="calim_menu" name="Reclamation" parent="ins_root_menu" action="claim_action_view"/>
 					<menuitem id="student_menu" name="Etudiant" parent="ins_root_menu" action="student_action_view"/>
-					<menuitem id="prof_menu" name="Professeur" parent="ins_root_menu" action="teacher_action_view"/>
+					<menuitem id="prof_menu" name="Professeur" parent="ins_root_menu" action="hr.open_view_employee_list_my"/>
 					<menuitem id="wiz_menu" name="Calcule de l'age" parent="ins_root_menu" action="student_wizard_action_view"/>
 
-				<menuitem id="conf_root_menu" parent="module_root" name="Configuration" sequence='3'/>
+				<menuitem id="bulletin_root_menu" parent="module_root" name="Notes" sequence='3'/>
+					<menuitem id="bulle_menu" name="Bulletin de notes" parent="bulletin_root_menu" action="bulletin_action_view"/>
+					
+				<menuitem id="conf_root_menu" parent="module_root" name="Configuration" sequence='4'/>
 					<menuitem id="year_menu" name="Année univ" parent="conf_root_menu" action="year_action_view"/>
-					<menuitem id="session_menu" name="Session" parent="conf_root_menu" action="session_action_view"/>			
+					<menuitem id="session_menu" name="Session" parent="conf_root_menu" action="session_action_view"/>
+					<menuitem id="specilaity_menu" name="Spécialité" parent="conf_root_menu" action="speciality_action_view"/>			
 </odoo>
+

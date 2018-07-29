@@ -15,7 +15,7 @@
             - model2
             - model3
     """,
-    'depends': ['base','mail','hr','website'],
+    'depends': ['base','mail','hr','website','sale'],
     'summary': 'formation, odoo 11, erp, ',
     'data': [
         'security/formation.xml',
@@ -26,9 +26,10 @@
         'demo/demo.xml',
         'controllers/formation.xml',
         'controllers/claim.xml',
-        'controllers/claim.xml',
+        'controllers/bulletin.xml',
         'report/report.xml',
         'report/registration.xml',
+        'report/bulletin_template.xml',
         'views/snippet.xml',
         'wizard/wiz_views.xml',
         'menu.xml',

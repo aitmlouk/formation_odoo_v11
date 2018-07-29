@@ -10,4 +10,15 @@
             attachment_use="False"
             print_report_name="'INSCRIP - %s' %(object.code)"
         />
+        
+        <report 
+            id="report_bulletin"
+            model="bulletin.bulletin"
+            string="Bulletin de notes"
+            report_type="qweb-pdf"
+            name="formation.report_template_bulletin"
+            file="formation.report_template_bulletin"
+            attachment_use="False"
+            print_report_name="'BULLETIN - %s' %(object.name)"
+        />
 </odoo>

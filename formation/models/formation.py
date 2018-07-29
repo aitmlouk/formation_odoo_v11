@@ -1,4 +1,4 @@
-from odoo import models, fields, api,_
+from odoo import models, fields, api,_,exceptions
 from odoo.exceptions import UserError, AccessError, ValidationError
 
 
@@ -11,6 +11,7 @@ class Registration(models.Model):
     @api.multi
     def print_report(self):
         return self.env.ref('formation.report_registration').report_action(self)
+    
     @api.one
     def action_new(self):
         self.state = 'new'
@@ -18,12 +19,15 @@ class Registration(models.Model):
     
     @api.one
     def action_done(self):
-        self.state = 'done'
+        if self.student_id :           
+            self.state = 'done'
+        else : raise UserError(_('Veuillez spécifier un étudiant.'))
         return True   
 
     @api.one
     def action_cancel(self):
-        self.state = 'cancel'
+        if self.state == 'done':
+            raise UserError(_('Vous ne pouvez pas annuler une inscription validée!'))
         return True   
     
         
@@ -36,7 +40,9 @@ class Registration(models.Model):
     
     @api.multi
     def write(self, vals):
-        vals['name'] = 'value by write method'
+        if not self.student_id:       
+            vals['name'] = self.code
+        else:vals['name'] = self.code + self.student_id.name
         return super(Registration, self).write(vals)
     
     @api.multi
@@ -58,7 +64,17 @@ class Registration(models.Model):
     @api.depends('claim_ids')
     def _compute_claims(self):
         self.nbr = len(self.claim_ids)
-        
+
+    @api.constrains('student_id')
+    def _check_something(self):
+        for record in self:
+            if record.student_id.age > 20:
+                raise ValidationError("Revoir l'age de l'étudiant: %s" % record.student_id.age)
+
+    @api.onchange('service_id')
+    def onchange_service_id(self):
+        if self.service_id:
+            self.fees = self.service_id.list_price or False                    
             
     name=fields.Char(string='Nom', required=False, readonly=False)
     code=fields.Char(string='Code', default='/', readonly=True)
@@ -69,11 +85,31 @@ class Registration(models.Model):
     year_id = fields.Many2one('year.year', string='Année univ', track_visibility='onchange')
     claim_ids = fields.One2many('claim.claim', 'reg_id', string='Reclamation')
     student_id = fields.Many2one('res.partner', string='Etudiant',domain="[('student_ok', '=',True)]", track_visibility='onchange')
-    state=fields.Selection([('new', 'Nouveau'), ('done', 'Validé'), ('cancel', 'Annulé')], string= 'Status', default='new',track_visibility='onchange')
-    
+    state=fields.Selection([('new', 'Nouveau'), ('done', 'Validé'), ('paid', 'Payé'), ('cancel', 'Annulé')], string= 'Status', default='new',track_visibility='onchange')
+    fees = fields.Float('Frais d\'inscription')
+    service_id = fields.Many2one('product.template','Service')
     nbr = fields.Integer(compute='_compute_claims', string='#reclamation')
+    order_ok = fields.Boolean('Commande générée')
 
-
+    @api.multi
+    def action_gererate_order(self): 
+        if self.student_id and self.service_id and self.order_ok==False:    
+            sale_order_id = self.env['sale.order'].create({ 'origin':self.name or False,
+                                                            'partner_id' : self.student_id and self.student_id.id or False,
+                                                            })
+                   
+            sale_order_line={
+                                'product_id' :self.service_id.id,
+                                'name' : self.service_id.name,
+                                'product_uom_qty' : 1,
+                                'order_id' : sale_order_id.id,
+                                }    
+            self.env['sale.order.line'].create(sale_order_line)  
+            self.order_ok = True
+        else : raise exceptions.except_orm(u'Attention !!', u'Veuillez choisir un étudiant !')
+        return True
+    
+    
 class Claim(models.Model):
     _name = 'claim.claim'
     _description = 'Reclamation'
@@ -137,7 +173,7 @@ class Cycle(models.Model):
     name=fields.Char(string='Nom', required=False, readonly=False)
     code=fields.Char(string='Code', required=False, readonly=False)
     description=fields.Text(string='description', required=False, readonly=False)
-    level_ids = fields.One2many('level.level','cycle_id', string='Niveau') 
+    filiers_ids = fields.One2many('filiere.filiere','cycle_id', string='Filière') 
  
     @api.multi
     def name_get(self):
@@ -148,7 +184,17 @@ class Cycle(models.Model):
             if record.name and not record.code:
                 result.append((record.id, record.name))
         return result   
-    
+
+class Filier(models.Model):
+    _name = 'filiere.filiere'
+    _description = 'la filière'
+ 
+    name=fields.Char(string='Nom', required=False, readonly=False)
+    code=fields.Char(string='Code', required=False, readonly=False)
+    description=fields.Text(string='description', required=False, readonly=False)
+    level_ids = fields.One2many('level.level','filiere_id', string='Niveau')
+    cycle_id =fields.Many2one('cycle.cycle', string='Cycle')
+        
 class Level(models.Model):
     _name = 'level.level'
     _description = 'level.level'
@@ -157,7 +203,7 @@ class Level(models.Model):
     code=fields.Char(string='Code', required=False, readonly=False)
     description=fields.Text(string='description', required=False, readonly=False)
     section_ids = fields.One2many('section.section','level_id', string='Section') 
-    cycle_id =fields.Many2one('cycle.cycle', string='Cycle')
+    filiere_id =fields.Many2one('filiere.filiere', string='Filière')
         
 class Section(models.Model):
     _name = 'section.section'
@@ -186,20 +232,69 @@ class Partner(models.Model):
     birthday = fields.Date(string='Date de naissance')
     age = fields.Integer(string='Age')
     reg_ids = fields.One2many('registration.registration','student_id', string='Inscription')
-    
+    bulletin_ids = fields.One2many('bulletin.bulletin','student_id', string='Bulletin de notes')
 
-class Prof(models.Model):
+            
+
+class Professor(models.Model):
     _inherit = 'hr.employee' 
-    _name = 'teacher.teacher'
     
     age = fields.Integer(string='Age')
     cin = fields.Char(string='CIN')
+    teacher_ok = fields.Boolean(string='Est un professeur')
+    speciality_id = fields.Many2one('speciality.speciality',string='Spécialité')
  
-    
-    
-    
  
+class Speciality(models.Model):
+    _name = 'speciality.speciality' 
+    _description = 'spécialité'
+    
+    name = fields.Char(string='Nom')
+    code = fields.Char(string='Code')    
+    
+    
+class Bulletin(models.Model):
+    _name = 'bulletin.bulletin' 
 
+    @api.depends('note_ids')
+    def _compute_average(self):
+        if self.note_ids:
+            average = 0
+            for module in self.note_ids:
+                average = average + module.average   
+            self.average = round(average/len(self.note_ids))
+                
+    name = fields.Char(string='Nom', readonly=True, default=lambda x: x.env['ir.sequence'].get('bulletin.bulletin'))
+    year_id = fields.Many2one('year.year',string='Année')
+    session_id = fields.Many2one('session.session',string='Session')
+    student_id = fields.Many2one('res.partner',string='Etudiant')
+    average = fields.Float(compute='_compute_average',string='Moyenne générale')
+    note_ids = fields.One2many('line.bulletin','bulletin_id', string='Notes')
+    user_id = fields.Many2one('res.users',string='Responsable') 
+
+class LineBulletin(models.Model):
+    _name = 'line.bulletin' 
+
+    @api.constrains('note_1','note_2')
+    def _check_notes(self):
+        if self.note_1 > 20 or self.note_1 < 0:
+            raise ValidationError("Note erronée: %s" % self.note_1)
+        elif self.note_2 > 20 or self.note_2 < 0:
+            raise ValidationError("Note erronée: %s" % self.note_2)
+
+    @api.onchange('note_1','note_2')
+    def _onchange_notes(self):
+        if self.note_1 and self.note_2:
+            self.average = (self.note_1 + self.note_2)/2
+                            
+    name = fields.Char(string='Nom',readonly=True, default=lambda x: x.env['ir.sequence'].get('line.bulletin'))
+    teacher_id = fields.Many2one('hr.employee',string='Professeur')
+    module_id = fields.Many2one('module.module',string='Module')
+    note_1 = fields.Float(string='Note 1')
+    note_2 = fields.Float(string='Note 2')
+    average = fields.Float(string='Moyenne')
+    bulletin_id = fields.Many2one('bulletin.bulletin', string='Bulletin') 
+    
     
     
     

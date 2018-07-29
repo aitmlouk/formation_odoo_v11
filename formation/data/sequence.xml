@@ -23,4 +23,29 @@
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence" type="int">40</field>
         </record>        
+
+        <!-- Sequences For bulletin.bulletin -->
+        <record id="seq_bulletin" model="ir.sequence">
+            <field name="name">bulletin.bulletin</field>
+            <field name="code">bulletin.bulletin</field>
+            <field name="prefix">BULL%(year)s-</field>
+            <field name="padding">4</field>
+        </record>
+        
+        <!-- Sequences For line.billetin -->
+        <record id="seq_bille_line" model="ir.sequence">
+            <field name="name">line.bulletin</field>
+            <field name="code">line.bulletin</field>
+            <field name="prefix">MODULE-%(year)s-</field>
+            <field name="padding">2</field>
+        </record>
+
+		<!-- menu for website bulletin page -->
+        <record id="menu_bull" model="website.menu">
+            <field name="name">Rélevé de notes</field>
+            <field name="url">/formation/bulletin</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record> 
+        
 </odoo>
